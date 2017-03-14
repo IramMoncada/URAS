@@ -1,0 +1,36 @@
+    ______                   _______        _ 
+   |  ____|                 |__   __|      | |
+   | |__ ___ _ __ _ __ ___     | | ___   __| | ___
+   |  __/ _ \ '__| '__/ _ \    | |/ _ \ / _` |/ _ \
+   | | |  __/ |  | | |  __/    | | (_) | (_| | (_) |
+   |_|  \___|_|  |_|  \___|    |_|\___/ \__,_|\___/ 
+
+                Ferre Todo, S.A. de C.V. 
+               AV. UNZUETA SALVADOR AGRAZ
+                       Canela #101
+                  Col. Granjas México
+                       Iztacalco
+                       México D.F.
+                  México          05300
+
+Venta Normal:                               $ 6950.0
+****************************************************
+Producto      	     Precio      	     Cantidad
+
+Desarmador      	     $80      	                70
+
+ 		                    Subtotal: $5600.0
+
+Sierra      	     $150      	                9
+
+ 		                    Subtotal: $1350.0
+
+Total: $ 6950.0    MX M.N.
+****************************************************
+Le atendio:                            Jesus Carranza.
+         9/10/2015             19:50:11
+
+         Pago hecho en una sola exibición
+
+       GRACIAS POR SU COMPRA, VUELVA PRONTO!!
+----------------------------------------------------

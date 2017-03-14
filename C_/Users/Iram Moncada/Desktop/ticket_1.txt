@@ -1,0 +1,36 @@
+    ______                   _______        _ 
+   |  ____|                 |__   __|      | |
+   | |__ ___ _ __ _ __ ___     | | ___   __| | ___
+   |  __/ _ \ '__| '__/ _ \    | |/ _ \ / _` |/ _ \
+   | | |  __/ |  | | |  __/    | | (_) | (_| | (_) |
+   |_|  \___|_|  |_|  \___|    |_|\___/ \__,_|\___/ 
+
+                Ferre Todo, S.A. de C.V. 
+               AV. UNZUETA SALVADOR AGRAZ
+                       Canela #101
+                  Col. Granjas México
+                       Iztacalco
+                       México D.F.
+                  México          05300
+
+Venta Normal:                               $ 250.0
+****************************************************
+Producto      	     Precio      	     Cantidad
+
+clavos 1/3      	     $45      	                2
+
+ 		                    Subtotal: $90.0
+
+Desarmador      	     $80      	                2
+
+ 		                    Subtotal: $160.0
+
+Total: $ 250.0    MX M.N.
+****************************************************
+Le atendio:                            Carlos Alberto Reyes Cortes.
+         12/11/2015             23:50:20
+
+         Pago hecho en una sola exibición
+
+       GRACIAS POR SU COMPRA, VUELVA PRONTO!!
+----------------------------------------------------
