@@ -1,33 +1,59 @@
 package uras;
 
 import ClaseConectar.ConexionBD;
-import java.sql.Connection;
+import java.sql.*;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import uras.RecuperarCuenta;
+import uras.Wadmin1;
+import uras.Welcome;
 
 public class Wadmin extends javax.swing.JFrame 
 {
     
     ConexionBD cc = new ConexionBD();
     Connection cn=cc.abrir_conexion();
-    String Admin="admin";
+    MD5_1 crypto = new MD5_1();
+    //String Admin="admin";
 
-     void acceder(String usuario, String pass)
-    {   
-        Linea mi_linea=new Linea();    
-                   String Apass=mi_linea.lee(0);
-             if((usuario.equals(Admin)&&pass.equals(Apass)))
-             {
-                    JOptionPane.showMessageDialog(null, "Bienvenido");
-                    dispose();
-                    Wadmin1 Admin = new Wadmin1();
-                   Admin.ejecutar();
+     void acceder(String usuario, String passEncriptada)
+    { 
+        String sql="SELECT * FROM AdminUsu WHERE nick='"+usuario+"' && password='"+passEncriptada+"'";
+        String administrador="";
+        String nombreAdmin="";
+        try 
+        {
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next())
+            {                
+                administrador = rs.getString("tipo_usu");
+                nombreAdmin = rs.getString("nombre");
+            }
+            
+             Wadmin1 ventana=new Wadmin1();
+            //Wuser ventanaWuse=new Wuser();
+            if (administrador.equals("Administrador"))
+            {
+                JOptionPane.showMessageDialog(null, "Datos validos, Bienvenido Administrador");
+                dispose();
+                ventana.setVisible(true);
+                
+                //FIA proyecto final
             }
             else
-                JOptionPane.showMessageDialog(this, "No existe sus datos"); 
+            {
+                JOptionPane.showMessageDialog(null,"Algo fallo");
+            }
+            
+        } catch (Exception e)
+        {
+            System.err.println("Error al acceder: "+e.getMessage());
+        }
+      
     }
 
     public Wadmin() {
@@ -56,6 +82,8 @@ public class Wadmin extends javax.swing.JFrame
         jLabel3 = new javax.swing.JLabel();
         Enter = new javax.swing.JButton();
         Cancel = new javax.swing.JButton();
+        jButtonRecuperar = new javax.swing.JButton();
+        jLabelRecuperar = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -101,57 +129,77 @@ public class Wadmin extends javax.swing.JFrame
             }
         });
 
+        jButtonRecuperar.setText("Recuperar");
+        jButtonRecuperar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRecuperarActionPerformed(evt);
+            }
+        });
+
+        jLabelRecuperar.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelRecuperar.setText("¿Olvido contraseña o usuario?");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(66, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addGap(29, 29, 29)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1)
-                            .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(164, 164, 164))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(URAS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(57, 57, 57))))
             .addGroup(layout.createSequentialGroup()
+                .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(URAS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(149, 149, 149)
-                        .addComponent(Enter)
-                        .addGap(63, 63, 63)
-                        .addComponent(Cancel))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(233, 233, 233)
-                        .addComponent(jLabel3)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel1)
+                                        .addComponent(jLabel2))
+                                    .addGap(29, 29, 29)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jTextField1)
+                                        .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addGap(70, 70, 70)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(Enter)
+                                .addGap(63, 63, 63)
+                                .addComponent(Cancel)))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(37, 37, 37)
+                                .addComponent(jButtonRecuperar, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabelRecuperar, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(14, 14, 14)
                 .addComponent(URAS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(38, 38, 38)
+                .addComponent(jLabel3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(38, 38, 38)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabelRecuperar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonRecuperar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Cancel)
                     .addComponent(Enter))
-                .addGap(45, 45, 45))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         pack();
@@ -170,15 +218,25 @@ miWelcome.ejecutar();
 
     private void EnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EnterActionPerformed
     String usu=jTextField1.getText();
-    String pas=new String(jPasswordField1.getPassword());
-    md5 mimd5= new md5();
-        String pass=mimd5.getStringMessageDigest(pas);
-    acceder(usu, pass); 
+    String passNormal=new String(jPasswordField1.getPassword());
+    String passEncriptada=crypto.Encriptar(passNormal);
+        System.out.println(passEncriptada);
+    acceder(usu, passEncriptada); 
     
  
                      
         
     }//GEN-LAST:event_EnterActionPerformed
+
+    private void jButtonRecuperarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRecuperarActionPerformed
+        // TODO add your handling code here:
+        dispose();
+        RecuperarCuenta recu=new RecuperarCuenta();
+        recu.llenarCombo("Administrador",null);
+        recu.ObtenerEmail("Administrador", null);
+        recu.setVisible(true);
+        
+    }//GEN-LAST:event_jButtonRecuperarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -220,9 +278,11 @@ miWelcome.ejecutar();
     private javax.swing.JButton Cancel;
     private javax.swing.JButton Enter;
     private java.awt.Label URAS;
+    private javax.swing.JButton jButtonRecuperar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabelRecuperar;
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables

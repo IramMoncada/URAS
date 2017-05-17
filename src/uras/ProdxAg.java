@@ -33,27 +33,23 @@ public class ProdxAg extends javax.swing.JFrame {
     }
 void mostrardatos(String valor){
     DefaultTableModel modelo= new DefaultTableModel();
-     //modelo.addColumn("ID");
     modelo.addColumn("PRODUCTO");
      modelo.addColumn("PRECIO");
     modelo.addColumn("CANTIDAD");
     TablaProductos.setModel(modelo);
     String sql="";
     
-        sql="SELECT * FROM productos WHERE cantidad<=10";
+        sql="SELECT * FROM productos WHERE cantidad<10";
     
  
-    String []datos = new String [4];
+    String []datos = new String [3];
         try {
             Statement st = cn.createStatement();
             ResultSet rs = st.executeQuery(sql);
             while(rs.next()){
-                datos[0]=rs.getString(2);
-                
-                datos[1]=rs.getString(3);
-                datos[2]=rs.getString(4);
-                //datos[3]=rs.getString(4);
-                
+                datos[0]=rs.getString(1);
+                datos[1]=rs.getString(2);
+                datos[2]=rs.getString(3);
                 modelo.addRow(datos);
             }
             TablaProductos.setModel(modelo);
@@ -86,7 +82,7 @@ void mostrardatos(String valor){
         jScrollPane1.setViewportView(TablaProductos);
 
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 17)); // NOI18N
-        jButton1.setText("cerrar");
+        jButton1.setText("Cerrar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -100,11 +96,11 @@ void mostrardatos(String valor){
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(155, 155, 155)
-                        .addComponent(jButton1))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(20, 20, 20)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(221, 221, 221)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(44, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -112,9 +108,9 @@ void mostrardatos(String valor){
             .addGroup(layout.createSequentialGroup()
                 .addGap(47, 47, 47)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addGap(29, 29, 29)
                 .addComponent(jButton1)
-                .addGap(48, 48, 48))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
 
         pack();

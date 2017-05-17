@@ -8,6 +8,7 @@ package ClaseConectar;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.*;
 
 /**
  *
@@ -19,10 +20,11 @@ public class ConexionBD {
    
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost:3306/Ferreteria";
+    static final String DB_URL = "jdbc:mysql://localhost:3306/ferreteria";
 //asignamos el usuario y password para poder accesar a unas variables ;
     static final String USER = "root";
-    static final String PASS = "root";
+    static final String PASS = "12345";
+     
 
     public Connection abrir_conexion() {
 
@@ -32,12 +34,12 @@ public class ConexionBD {
 
             //PASO 3: Abre la conexión
             System.out.println("Conectando a la base de datos seleccionada");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            conn = DriverManager.getConnection(DB_URL,USER,PASS);
           
             System.out.println("Conectado a la base de datos correctamente");
 
         } catch (SQLException se) {
-            System.out.println("No se puede conectar");
+            System.out.println("No se puede conectar"+se.getMessage());
             //manejo de errores del JDBC 
             se.printStackTrace();
         } catch (Exception e) {
@@ -67,7 +69,7 @@ public class ConexionBD {
         ConexionBD co = new ConexionBD();
         co.abrir_conexion();
 
-        co.cerrar_conexion();
+        //co.cerrar_conexion();
 
     }//finaiza main
 }

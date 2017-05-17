@@ -1,7 +1,6 @@
 package uras;
 
 import ClaseConectar.ConexionBD;
-import java.awt.Color;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,7 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-
+//LA TABLA VENTAS ES PARA GUARDAR LOS FOLIOS DE LOS TICKETS
 public class InterVendedor extends javax.swing.JFrame {
      ConexionBD cc = new ConexionBD();
     Connection cn =cc.abrir_conexion();
@@ -50,7 +49,6 @@ public class InterVendedor extends javax.swing.JFrame {
       public boolean isCellEditable(int row, int column) 
       {return false;}
     };
-    modelo.addColumn("ID");
     modelo.addColumn("PRODUCTO");
      modelo.addColumn("PRECIO");
     modelo.addColumn("CANTIDAD");
@@ -69,7 +67,7 @@ public class InterVendedor extends javax.swing.JFrame {
         sql="SELECT * FROM productos WHERE nombre LIKE '"+valor1+"'";
     }
  
-    String []datos = new String [4];
+    String []datos = new String [3];
         try {
             Statement st = cn.createStatement();
             ResultSet rs = st.executeQuery(sql);
@@ -78,17 +76,10 @@ public class InterVendedor extends javax.swing.JFrame {
                 
                 datos[1]=rs.getString(2);
                 datos[2]=rs.getString(3);
-                datos[3]=rs.getString(4);
                 modelo.addRow(datos);
             }
             TablaProductos.setModel(modelo);
-            TablaProductos.getColumnModel().getColumn(0).setPreferredWidth(0);
-            TablaProductos.getColumnModel().getColumn(0).setMaxWidth(0);
-            TablaProductos.getColumnModel().getColumn(0).setMinWidth(0);
-            TablaProductos.getColumnModel().getColumn(1).setPreferredWidth(300);
-            
-          
-            TablaProductos.getColumnModel().getColumn(1).setPreferredWidth(200);
+            TablaProductos.getColumnModel().getColumn(0).setPreferredWidth(200);
         } catch (SQLException ex) {
             Logger.getLogger(ModProd.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -102,8 +93,8 @@ public class InterVendedor extends javax.swing.JFrame {
         double miTotal=0.0,val1,val2;
           for(int i=0;i<rows;i++) 
           {
-              val1=Double.parseDouble(String.valueOf(TablaProductos2.getValueAt(i,2)));
-              val2=Double.parseDouble(String.valueOf(TablaProductos2.getValueAt(i,3)));
+              val1=Double.parseDouble(String.valueOf(TablaProductos2.getValueAt(i,1)));
+              val2=Double.parseDouble(String.valueOf(TablaProductos2.getValueAt(i,2)));
 
             miTotal= miTotal + ( val1*val2); 
           }
@@ -121,14 +112,12 @@ public class InterVendedor extends javax.swing.JFrame {
          public boolean isCellEditable(int row, int column) 
          { return false;}
        };
-    modelo.addColumn("");
     modelo.addColumn("PRODUCTO");
      modelo.addColumn("PRECIO");
     modelo.addColumn("CANTIDAD");
     
     TablaProductos2.setModel(modelo);
-    TablaProductos2.getColumnModel().getColumn(0).setPreferredWidth(0);
-    TablaProductos2.getColumnModel().getColumn(1).setPreferredWidth(200);
+    TablaProductos2.getColumnModel().getColumn(0).setPreferredWidth(200);
     
     return modelo;
    }
@@ -139,22 +128,22 @@ public class InterVendedor extends javax.swing.JFrame {
            int rows=mi_modelo.getRowCount();
            for(int i=0;i<rows;i++)  //update una por una
            { 
-             String id_carrito=TablaProductos2.getValueAt(i,0).toString();//id de productos del carrito             
-             String cantidad_carrito= TablaProductos2.getValueAt(i, 3).toString();
+             String nombre_carrito=TablaProductos2.getValueAt(i,0).toString();//id de productos del carrito             
+             String cantidad_carrito= TablaProductos2.getValueAt(i, 2).toString();
                 int carrito=Integer.parseInt(cantidad_carrito);// cantidad del producto del carrito        
            
-             String consul="SELECT cantidad FROM productos WHERE id="+id_carrito;//cantidad del almacen segun id
-               
+             String consul="SELECT cantidad FROM productos WHERE nombre='"+nombre_carrito+"'";//cantidad del almacen segun id
+               System.out.println(consul);
                  try
-                 {
+                 { 
                      Statement st=cn.createStatement();
-                     ResultSet rs=st.executeQuery(consul);
-                      if(rs.next())
+                     ResultSet rs=st.executeQuery(consul);//aqui es
+                      if(rs.next()) 
                       {
                        String cantidad_bd= rs.getString(1);
                        int bd=Integer.parseInt(cantidad_bd);
                        int result=bd-carrito;
-                       String modifica="UPDATE productos SET cantidad='"+ result +"' WHERE id='"+id_carrito+"'";
+                       String modifica="UPDATE productos SET cantidad='"+ result +"' WHERE nombre='"+nombre_carrito+"'";
                          try{ 
                                PreparedStatement pst=cn.prepareStatement(modifica);
                                pst.executeUpdate();
@@ -206,23 +195,22 @@ public class InterVendedor extends javax.swing.JFrame {
  for(int j=0;j<row;j++)  //update una por una
                      { 
                    //vendedor
-                        String id_prod=TablaProductos2.getValueAt(j,0 ).toString(); //copia los elementos del seleccionado
-                        String nombre=TablaProductos2.getValueAt(j, 1).toString();
-                        String precio = TablaProductos2.getValueAt(j, 2).toString();
-                        String cantidad= TablaProductos2.getValueAt(j, 3).toString();
+                         //copia los elementos del seleccionado
+                        String nombre=TablaProductos2.getValueAt(j, 0).toString();
+                        String precio = TablaProductos2.getValueAt(j, 1).toString();
+                        String cantidad= TablaProductos2.getValueAt(j, 2).toString();
                        
                         double total= Double.parseDouble(precio)*Double.parseDouble(cantidad);
                         
                         try {
-            PreparedStatement pst= cn.prepareStatement("INSERT INTO ventas_productos (id_ventas,id_prod,nombre,precio,cantidad,total,vendedor) VALUES(?,?,?,?,?,?,?)");
+            PreparedStatement pst= cn.prepareStatement("INSERT INTO ventas_productos (id_ventas,nombre,precio,cantidad,total,vendedor) VALUES(?,?,?,?,?,?)");
             
-             pst.setString(1,null);
-                pst.setString(2,id_prod);
-               pst.setString(3,nombre);
-               pst.setString(4,precio);
-               pst.setString(5,cantidad);
-               pst.setString(6,Double.toString(total));
-               pst.setString(7,mi_usuario);
+               pst.setString(1,null);
+               pst.setString(2,nombre);
+               pst.setString(3,precio);
+               pst.setString(4,cantidad);
+               pst.setString(5,Double.toString(total));
+               pst.setString(6,mi_usuario);
                
              
                 
@@ -509,49 +497,122 @@ public class InterVendedor extends javax.swing.JFrame {
 mostrardatos("");        
     }//GEN-LAST:event_jButton3ActionPerformed
 
-   private boolean valida_carrito(String id)
+   private boolean valida_carrito(String nombre)
    {
         int cant=mi_modelo.getRowCount();
        for(int i=0;i<cant;i++)    
        {
-          String id2 = TablaProductos2.getValueAt(i, 1).toString();
-          if(id==id2)
+          String nombre2 = TablaProductos2.getValueAt(i, 0).toString();
+          if(nombre==nombre2)
               return true;//cuando id ya exista
        }
     return false; 
    }
     
+    private String obten_ubicacion(String producto){
+        String sql="SELECT ubicacion FROM productos WHERE nombre = '"+producto+"'";
+        String ubicacion="";
+        try {
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+             while(rs.next())
+              {
+                   ubicacion=rs.getString(1);
+              }
+        } catch(Exception E){
+         ubicacion="No se encontro ubicacion";
+        }        
+     return ubicacion;
+    }
+    
+      private void salida_almacen (String producto, String cantidad)
+    {
+        String responsable=mi_usuario;//obtener usuario activo (nombre)
+        Calendar c = Calendar.getInstance();
+                             String dia = Integer.toString(c.get(Calendar.DATE));
+                             String mes = Integer.toString(c.get(Calendar.MONTH));
+                             String annio = Integer.toString(c.get(Calendar.YEAR));
+                             String hora = Integer.toString(c.get(Calendar.HOUR_OF_DAY));
+                             String minutos = Integer.toString( c.get(Calendar.MINUTE));
+        
+        try {
+            PreparedStatement pst= cn.prepareStatement("INSERT INTO almacen (id_mov,tipo,producto,cantidad,hora,fecha,responsable) VALUES(?,?,?,?,?,?,?)");
+               pst.setString(1,null);
+               pst.setString(2,"SALIDA");
+               pst.setString(3,producto);
+               pst.setString(4,cantidad);
+               pst.setString(5,hora+":"+minutos);
+               pst.setString(6,dia+"/"+mes+"/"+annio);
+               pst.setString(7,responsable); 
+               pst.executeUpdate();
+             
+        } catch (SQLException ex) {
+            Logger.getLogger(ModProd.class.getName()).log(Level.SEVERE, null, ex);
+        }   
+    }
+    
+        private void entrada_almacen (String producto, String cantidad)
+    {
+        String responsable=mi_usuario;//obtener usuario activo (nombre)
+        Calendar c = Calendar.getInstance();
+                             String dia = Integer.toString(c.get(Calendar.DATE));
+                             String mes = Integer.toString(c.get(Calendar.MONTH));
+                             String annio = Integer.toString(c.get(Calendar.YEAR));
+                             String hora = Integer.toString(c.get(Calendar.HOUR_OF_DAY));
+                             String minutos = Integer.toString( c.get(Calendar.MINUTE));
+        
+        try {
+            PreparedStatement pst= cn.prepareStatement("INSERT INTO almacen (id_mov,tipo,producto,cantidad,hora,fecha,responsable) VALUES(?,?,?,?,?,?,?)");
+               pst.setString(1,null);
+               pst.setString(2,"ENTRADA");
+               pst.setString(3,producto);
+               pst.setString(4,cantidad);
+               pst.setString(5,hora+":"+minutos);
+               pst.setString(6,dia+"/"+mes+"/"+annio);
+               pst.setString(7,responsable); 
+               pst.executeUpdate();
+             
+        } catch (SQLException ex) {
+            Logger.getLogger(ModProd.class.getName()).log(Level.SEVERE, null, ex);
+        }   
+    }
+      
+      
     
     private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
-         
+         //clic en agregar producto
           try {
             int item=TablaProductos.getSelectedRow();   //obtiene la posicion del elemento seleccionado 
-        
-       String producto=TablaProductos.getValueAt(item,1 ).toString(); //copia los elementos del seleccionado
-       String precio=TablaProductos.getValueAt(item, 2).toString();
-       String id = TablaProductos.getValueAt(item, 0).toString();
+       String producto=TablaProductos.getValueAt(item,0 ).toString(); //copia los elementos del seleccionado
+       String precio=TablaProductos.getValueAt(item, 1).toString();
+       String ubicacion=obten_ubicacion(producto);//ubicacion de la tabla productos del producto
        JTextField numero = new JTextField(5);
         JPanel myPanel = new JPanel();
        if(valida_carrito(producto))
-           JOptionPane.showMessageDialog(null,"No puede agregar 2 veces el mismo produtco");
+           JOptionPane.showMessageDialog(null,"No puede agregar 2 veces el mismo producto");
        else{   
         myPanel.add(new JLabel("Cantidad de productos:"));
          myPanel.add(numero);
            int result = JOptionPane.showConfirmDialog(null, myPanel,("Cantidad de productos"), JOptionPane.OK_CANCEL_OPTION);
                                                             //caja de confirmacion de que los valores correctos
             if (result == JOptionPane.OK_OPTION)
-            {
+            {    
                 String cantidad=numero.getText();//cantidad asignada por vendedor
-                String cantidad2=TablaProductos.getValueAt(item,3).toString();//cantidad del almacen
+                String cantidad2=TablaProductos.getValueAt(item,2).toString();//cantidad del almacen
                 double value1 = Double.parseDouble(cantidad);//cantidad asignada por vendedor
                 double value2 = Double.parseDouble(cantidad2);//cantidad del almacen
                 int numerosh=Integer.parseInt(cantidad);
                 cantidad=Integer.toString(numerosh);
-                
+                if(numerosh<=0)
+                    JOptionPane.showMessageDialog(null,"No puede agregar cantidades menores a 1");
+                else
                 if(value1<=value2)
                 {
-                 mi_modelo.addRow(new Object[]{id ,producto,precio,cantidad});// los asigna a mi_modelo que es el modelo de tabla 2
-                total();
+                    String almacen_result="El producto: "+producto+"\nSe encuentra ubicado en el cajon: "+ubicacion+" del almacén";
+                    JOptionPane.showMessageDialog(null,almacen_result);
+                    mi_modelo.addRow(new Object[]{producto,precio,cantidad});// los asigna a mi_modelo que es el modelo de tabla 2
+                    total();
+                    salida_almacen(producto,numero.getText());
                 }
                 else{JOptionPane.showMessageDialog(this, "No hay suficiente producto en almacen");}
             }
@@ -566,7 +627,10 @@ mostrardatos("");
       
         try{
          int item=TablaProductos2.getSelectedRow(); //obtiene la posicion del elemento seleccionado
-        mi_modelo.removeRow(item);  
+           String producto=TablaProductos2.getValueAt(item,0 ).toString(); //copia los elementos del seleccionado
+           String cantidad=TablaProductos2.getValueAt(item, 2).toString();
+            entrada_almacen(producto,cantidad);
+            mi_modelo.removeRow(item);
           }
         catch (Exception e) { 
             JOptionPane.showMessageDialog(this, "No ha seleccionado un item");
@@ -582,7 +646,12 @@ mostrardatos("");
        if(rows!=0) //si no esta vacia, procede a eliminar
        {
          for(int i=0;i<rows;i++)  //borra una por una 
+         { 
+          String producto=TablaProductos2.getValueAt(0,0 ).toString(); //copia los elementos del seleccionado
+           String cantidad=TablaProductos2.getValueAt(0, 2).toString();
+            entrada_almacen(producto,cantidad);
             mi_modelo.removeRow(0);
+         }
        }
        
        total();
@@ -599,8 +668,7 @@ mostrardatos("");
        {
         JPanel myPanel = new JPanel();
         myPanel.add(new JLabel("Estas seguro??"));
-        int result = JOptionPane.showConfirmDialog(null, myPanel,//caja de confirmacion de que los valores correctos
-        ("Cantidad de productos"), JOptionPane.YES_NO_OPTION);
+        int result = JOptionPane.showConfirmDialog(null, myPanel,("Cantidad de productos"), JOptionPane.YES_NO_OPTION);
            if (result == JOptionPane.OK_OPTION)
            {
               String folio=update(); //update antes de nueva venta: actualiza productos e inserta venta 
@@ -640,9 +708,9 @@ mostrardatos("");
                              int row=mi_modelo.getRowCount(); //cuantas filas hay en el carrito
                              for(int i=0;i<rows;i++)  //recorre fila por fila 
                                {
-                                String producto=TablaProductos2.getValueAt(i,1 ).toString(); 
-                                String precio=TablaProductos2.getValueAt(i, 2).toString();
-                                String cantidad = TablaProductos2.getValueAt(i, 3).toString();
+                                String producto=TablaProductos2.getValueAt(i,0 ).toString(); 
+                                String precio=TablaProductos2.getValueAt(i, 1).toString();
+                                String cantidad = TablaProductos2.getValueAt(i, 2).toString();
                                 
                                 wr.write(""+producto+"      	     $"+precio+"      	                "+cantidad+"\r\n");
                                 
@@ -676,8 +744,21 @@ mostrardatos("");
                                   System.err.println("No se creo el archivo");
                             }
                    
-                if(bandera)
-                    JOptionPane.showMessageDialog(this, "Venta realizada con exito");     
+                if(bandera)     
+                {JOptionPane.showMessageDialog(this, "Venta realizada con exito");
+                
+                
+                     int resp = JOptionPane.showConfirmDialog(null, "¿Requiere Factura?", "Alerta!", JOptionPane.YES_NO_OPTION);
+                     if (resp==JOptionPane.OK_OPTION)
+                     {
+                        
+                        dispose();
+                        Facturacion_vende factura= new Facturacion_vende();
+                        
+                        factura.ejecutarf();
+                                }
+                
+                }
              //elimina tabla  para nueva venta
           
                  for(int i=0;i<rows;i++)  //borra una por una 

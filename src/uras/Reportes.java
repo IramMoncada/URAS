@@ -57,48 +57,55 @@ Connection cn =cc.abrir_conexion();
     
      void mostrardatos()
         {
+            String VendedorMatutino="Matutino";
+            
+            try 
+        {
+            String sql="SELECT nombre FROM AdminUsu WHERE turno='Matutino' && tipo_usu='Vendedor'";
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next())
+            {
+               jLabelMatutino.setText(rs.getString("nombre"));
+               VendedorMatutino = rs.getString("nombre");
+            }
+        } 
+        catch (Exception e) 
+        {
+            System.err.println("Error al obtener vendedor: "+e.getMessage());
+        }
+            
             DefaultTableModel modelo= new DefaultTableModel() //tabla ineditable
                 {
                     public boolean isCellEditable(int row, int column) 
                     {return false;}
                 };
-                    modelo.addColumn("Id");
-                    modelo.addColumn("Id");
+            
                     modelo.addColumn("producto");
                     modelo.addColumn("precio");
                     modelo.addColumn("cantidad");
                     modelo.addColumn("total");
                     modelo.addColumn("VENDEDOR");
-                    
-     
-
+    
     String sql= "";
             
-            sql="SELECT * FROM ventas_productos WHERE vendedor='Aaron Unzueta Chavez' ";
-     String []datos = new String [7];
+            sql="SELECT * FROM ventas_productos WHERE vendedor='"+VendedorMatutino+"' ";//obtener usuario actual
+     String []datos = new String [5];
         try {
             Statement stmt = cn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next())
               {
-                datos[0]=rs.getString(1);
-                datos[1]=rs.getString(2);
-                datos[2]=rs.getString(3);
-                datos[3]=rs.getString(4);
-                datos[4]=rs.getString(5);
-                datos[5]=rs.getString(6);
-                datos[6]=rs.getString(7);
+                datos[0]=rs.getString(2);
+                datos[1]=rs.getString(3);
+                datos[2]=rs.getString(4);
+                datos[3]=rs.getString(5);
+                datos[4]=rs.getString(6);
              
                 
                 modelo.addRow(datos);
               }
                      TablaProductos.setModel(modelo);
-                     TablaProductos.getColumnModel().getColumn(0).setPreferredWidth(0);
-                     TablaProductos.getColumnModel().getColumn(0).setMinWidth(0);
-                     TablaProductos.getColumnModel().getColumn(0).setMaxWidth(0);
-                      TablaProductos.getColumnModel().getColumn(1).setPreferredWidth(0);
-                     TablaProductos.getColumnModel().getColumn(1).setMinWidth(0);
-                     TablaProductos.getColumnModel().getColumn(1).setMaxWidth(0);
                      
             } 
                 catch (SQLException ex) 
@@ -108,45 +115,53 @@ Connection cn =cc.abrir_conexion();
         }
      
 
-void mostrardatos1(String valor)
+void mostrardatos1(String valor) //Vespertino
     {
+    
+    String VendedorVespertino="";
+        try 
+        {
+            String sql="SELECT nombre FROM AdminUsu WHERE turno='Vespertino' && tipo_usu='Vendedor'";
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next())
+            {
+               jLabelVespertino.setText(rs.getString("nombre"));
+               VendedorVespertino = rs.getString("nombre");
+            }
+        } 
+        catch (Exception e) 
+        {
+            System.err.println("Error al obtener vendedor: "+e.getMessage());
+        }
+        
+        
     DefaultTableModel modelo2= new DefaultTableModel() //tabla ineditable
     {
       public boolean isCellEditable(int row, int column) 
       {return false;}
     };
-                    modelo2.addColumn("Id");
-                    modelo2.addColumn("Id");
                     modelo2.addColumn("producto");
                     modelo2.addColumn("precio");
                     modelo2.addColumn("cantidad");
                     modelo2.addColumn("total");
                     modelo2.addColumn("VENDEDOR");
-             
-     
+    
     String sql= "";
-     sql="SELECT * FROM ventas_productos WHERE vendedor='Carlos Alberto Reyes Cortes' ";
-     String []datos = new String [7];
+     sql="SELECT * FROM ventas_productos WHERE vendedor='"+VendedorVespertino+"' ";// mostrar vendedor 2 actual
+     String []datos = new String [5];
         try {
             Statement stmt = cn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
-                datos[0]=rs.getString(1);
-                datos[1]=rs.getString(2);
-                datos[2]=rs.getString(3);
-                datos[3]=rs.getString(4);
-                datos[4]=rs.getString(5);
-                datos[5]=rs.getString(6);
-                datos[6]=rs.getString(7);
+                datos[0]=rs.getString(2);
+                datos[1]=rs.getString(3);
+                datos[2]=rs.getString(4);
+                datos[3]=rs.getString(5);
+                datos[4]=rs.getString(6);
                 modelo2.addRow(datos);
             }
               TablaProductos2.setModel(modelo2); 
-              TablaProductos2.getColumnModel().getColumn(0).setPreferredWidth(0);
-            TablaProductos2.getColumnModel().getColumn(0).setMinWidth(0);
-            TablaProductos2.getColumnModel().getColumn(0).setMaxWidth(0);
-            TablaProductos2.getColumnModel().getColumn(1).setPreferredWidth(0);
-            TablaProductos2.getColumnModel().getColumn(1).setMinWidth(0);
-            TablaProductos2.getColumnModel().getColumn(1).setMaxWidth(0);
     
         } catch (SQLException ex) {
             Logger.getLogger(ModProd.class.getName()).log(Level.SEVERE, null, ex);
@@ -160,8 +175,8 @@ void mostrardatos1(String valor)
         double miTotal=0.0,miTotal1=0.0,val1,val2;
           for(int i=0;i<rows;i++) 
           {
-              val1=Double.parseDouble(String.valueOf(TablaProductos.getValueAt(i,4)));
-               val2=Double.parseDouble(String.valueOf(TablaProductos.getValueAt(i,5)));
+              val1=Double.parseDouble(String.valueOf(TablaProductos.getValueAt(i,2)));
+               val2=Double.parseDouble(String.valueOf(TablaProductos.getValueAt(i,3)));
 
             miTotal= miTotal +  val1; 
             miTotal1= miTotal1+ val2;
@@ -182,8 +197,8 @@ void mostrardatos1(String valor)
         double miTotal=0.0,miTotal1=0.0, val1,val2 = 0;
           for(int i=0;i<rows;i++) 
           {
-              val1=Double.parseDouble(String.valueOf(TablaProductos2.getValueAt(i,4)));
-              val2=Double.parseDouble(String.valueOf(TablaProductos2.getValueAt(i,5)));
+              val1=Double.parseDouble(String.valueOf(TablaProductos2.getValueAt(i,2)));
+              val2=Double.parseDouble(String.valueOf(TablaProductos2.getValueAt(i,3)));
               
 
             miTotal= miTotal +  val1; 
@@ -225,6 +240,9 @@ void mostrardatos1(String valor)
         total3 = new javax.swing.JLabel();
         totalidad = new javax.swing.JLabel();
         total1 = new javax.swing.JLabel();
+        jLabelMatutino = new javax.swing.JLabel();
+        jLabelVespertino = new javax.swing.JLabel();
+        jButtonReporteInvitado = new javax.swing.JButton();
 
         jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/reporte de ventas2.png"))); // NOI18N
 
@@ -236,11 +254,11 @@ void mostrardatos1(String valor)
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 17)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Ventas Vendedor 1");
+        jLabel2.setText("Ventas Vendedor:");
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 17)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Ventas Vendedor 2");
+        jLabel3.setText("Ventas Vendedor:");
 
         TablaProductos.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
         TablaProductos.setModel(new javax.swing.table.DefaultTableModel(
@@ -329,6 +347,19 @@ void mostrardatos1(String valor)
         total1.setForeground(new java.awt.Color(255, 255, 255));
         total1.setText("total");
 
+        jLabelMatutino.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelMatutino.setText("Matutino");
+
+        jLabelVespertino.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelVespertino.setText("Vespertino");
+
+        jButtonReporteInvitado.setText("Reporte Ventas Invitados");
+        jButtonReporteInvitado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonReporteInvitadoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -342,35 +373,46 @@ void mostrardatos1(String valor)
                         .addGap(38, 38, 38)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addGap(31, 31, 31)
-                                .addComponent(totalidad, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton1)
-                                .addGap(51, 51, 51))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(192, 192, 192)
-                                .addComponent(total, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(total1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(73, 73, 73))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addGap(192, 192, 192)
-                                        .addComponent(total2, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(66, 66, 66)
-                                        .addComponent(total3, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                        .addComponent(jLabel6)
+                                        .addGap(31, 31, 31)
+                                        .addComponent(totalidad, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jButtonReporteInvitado, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jButton1)
+                                        .addGap(51, 51, 51))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(total, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(138, 138, 138)
+                                        .addComponent(total1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(106, 106, 106))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel2)
+                                                .addGap(29, 29, 29)
+                                                .addComponent(jLabelMatutino))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel3)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(jLabelVespertino))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel5)
+                                                .addGap(240, 240, 240)
+                                                .addComponent(total2, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(111, 111, 111)
+                                                .addComponent(total3, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGap(67, 67, 67))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jButton3)
-                                .addGap(293, 293, 293)
-                                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)))
-                        .addGap(67, 67, 67)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(137, 137, 137)))))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -385,7 +427,9 @@ void mostrardatos1(String valor)
                 .addGap(23, 23, 23)
                 .addComponent(jLabel1)
                 .addGap(35, 35, 35)
-                .addComponent(jLabel2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabelMatutino))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -394,7 +438,9 @@ void mostrardatos1(String valor)
                     .addComponent(total)
                     .addComponent(total1))
                 .addGap(42, 42, 42)
-                .addComponent(jLabel3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabelVespertino))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(24, 24, 24)
@@ -406,10 +452,11 @@ void mostrardatos1(String valor)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(totalidad))
+                    .addComponent(totalidad)
+                    .addComponent(jButtonReporteInvitado, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -532,10 +579,10 @@ void mostrardatos1(String valor)
                               int rows=TablaProductos.getRowCount(); //cuantas filas hay en el carrito
                              for(int i=0;i<rows;i++)  //recorre fila por fila 
                                {
-                                String producto=TablaProductos.getValueAt(i,2 ).toString(); 
-                                String precio=TablaProductos.getValueAt(i, 3).toString();
-                                String cantidad = TablaProductos.getValueAt(i, 4).toString();
-                                String total = TablaProductos.getValueAt(i, 5).toString();
+                                String producto=TablaProductos.getValueAt(i,0 ).toString(); 
+                                String precio=TablaProductos.getValueAt(i, 1).toString();
+                                String cantidad = TablaProductos.getValueAt(i, 2).toString();
+                                String total = TablaProductos.getValueAt(i, 3).toString();
                                 wr.write(""+producto+"      	     $"+precio+"      	 "+cantidad+"         $"+total+"\r\n");
                                 
                                 
@@ -546,10 +593,10 @@ void mostrardatos1(String valor)
                               int rows1=TablaProductos2.getRowCount(); //cuantas filas hay en el carrito
                              for(int i=0;i<rows1;i++)  //recorre fila por fila 
                                {
-                                String producto=TablaProductos2.getValueAt(i,2 ).toString(); 
-                                String precio=TablaProductos2.getValueAt(i, 3).toString();
-                                String cantidad = TablaProductos2.getValueAt(i, 4).toString();
-                                String total = TablaProductos2.getValueAt(i, 5).toString();
+                                String producto=TablaProductos2.getValueAt(i,0 ).toString(); 
+                                String precio=TablaProductos2.getValueAt(i, 1).toString();
+                                String cantidad = TablaProductos2.getValueAt(i, 2).toString();
+                                String total = TablaProductos2.getValueAt(i, 3).toString();
                                 wr.write(""+producto+"      	     $"+precio+"      	 "+cantidad+"         $"+total+"\r\n");
                                 }
                              wr.write("\r\nTotal                          \t"+total2.getText()+ "        $"+total3.getText());
@@ -568,6 +615,14 @@ void mostrardatos1(String valor)
                 else
                     JOptionPane.showMessageDialog(null,"Tablas vacias, no puede generar reporte");
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButtonReporteInvitadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReporteInvitadoActionPerformed
+        dispose();
+        ReporteVentaInvitado reporIn = new ReporteVentaInvitado();
+        reporIn.setVisible(true);
+        
+// TODO add your handling code here:
+    }//GEN-LAST:event_jButtonReporteInvitadoActionPerformed
 
  
     public void ejecutar() {
@@ -608,6 +663,7 @@ void mostrardatos1(String valor)
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButtonReporteInvitado;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -615,6 +671,8 @@ void mostrardatos1(String valor)
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabelMatutino;
+    public static javax.swing.JLabel jLabelVespertino;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel total;

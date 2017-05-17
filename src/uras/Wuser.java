@@ -1,37 +1,65 @@
 package uras;
 
+import ClaseConectar.ConexionBD;
+import java.sql.*;
 import javax.swing.*;
+import uras.InterVendedor;
+import uras.RecuperarCuenta;
+import uras.Welcome;
+
 
 public class Wuser extends javax.swing.JFrame {
-    String User1="user1";
-    String User2="user2";
+    //String User1="user1";
+    //String User2="user2
+    ConexionBD cc = new ConexionBD();
+    Connection cn =cc.abrir_conexion();
+    MD5_1 crypto = new MD5_1();
     
-        void acceder(String usuario, String pass)
-          {
-              Linea mi_linea=new Linea();    
-                   String U1password=mi_linea.lee(1);
-                   String U2password=mi_linea.lee(2);
-   
-            if((usuario.equals(User1)&&pass.equals(U1password))||(usuario.equals(User2)&&pass.equals(U2password)))//si valido
+    void acceder(String usuario, String passEncriptada)
+    {
+        String sql="SELECT * FROM AdminUsu WHERE nick='"+usuario+"' && password='"+passEncriptada+"'";
+        String vendedor="";
+        String nombreVendedor="";
+        try 
+        {
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next())
+            {                
+                vendedor = rs.getString("tipo_usu");
+                nombreVendedor = rs.getString("nombre");
+            }
+            
+            InterVendedor ventana=new InterVendedor();
+            //Wuser ventanaWuse=new Wuser();
+            if (vendedor.equals("Vendedor"))
             {
-                    
-                    JOptionPane.showMessageDialog(null, "Bienvenido");
-                    dispose();
-                    InterVendedor Vendedor = new InterVendedor();
-                    if (usuario.equals(User1))
-                            InterVendedor.mi_usuario="Aaron Unzueta Chavez";
-                    if (usuario.equals(User2))
-                            InterVendedor.mi_usuario="Carlos Alberto Reyes Cortes";
-                    Vendedor.mostrar();
-                   
+                JOptionPane.showMessageDialog(null, "Datos validos");
+                InterVendedor.mi_usuario= nombreVendedor;
+                dispose();
+                ventana.mostrar();
+                
+                //FIA proyecto final
+            }
+            else if(vendedor.equals("Vendedor Invitado"))
+            {
+                JOptionPane.showMessageDialog(null, "Bienvenido Invitado");
+                InterVendedor.mi_usuario= nombreVendedor;
+                dispose();
+                ventana.mostrar();
+                
             }
             else
             {
-                JOptionPane.showMessageDialog(this, "No existen sus datos");
+                JOptionPane.showMessageDialog(null,"Algo fallo");
             }
-        
-       
+            
+        } catch (Exception e)
+        {
+            System.err.println("Error al acceder: "+e.getMessage());
         }
+              
+    }
 
     public Wuser() 
     {
@@ -60,6 +88,8 @@ public class Wuser extends javax.swing.JFrame {
         label2 = new java.awt.Label();
         jPasswordField2 = new javax.swing.JPasswordField();
         jTextField2 = new javax.swing.JTextField();
+        jButtonRecuperarContraseña = new javax.swing.JButton();
+        jLabelOlvido = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -106,33 +136,51 @@ public class Wuser extends javax.swing.JFrame {
             }
         });
 
+        jButtonRecuperarContraseña.setText("Recuperar");
+        jButtonRecuperarContraseña.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRecuperarContraseñaActionPerformed(evt);
+            }
+        });
+
+        jLabelOlvido.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelOlvido.setText("¿Olvido Usuario o Contraseña?");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(79, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(label1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(85, 85, 85)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(66, 66, 66)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelOlvido)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(Enter)
-                                .addGap(48, 48, 48)
-                                .addComponent(Cancel))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel1))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jPasswordField2)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(142, 142, 142)
-                        .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(85, Short.MAX_VALUE))
+                                .addGap(47, 47, 47)
+                                .addComponent(jButtonRecuperarContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(Enter)
+                        .addGap(53, 53, 53)
+                        .addComponent(Cancel)))
+                .addContainerGap(24, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(154, 154, 154)
+                .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -141,19 +189,26 @@ public class Wuser extends javax.swing.JFrame {
                 .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(27, 27, 27)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addComponent(jLabelOlvido, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonRecuperarContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Cancel)
                     .addComponent(Enter))
-                .addGap(51, 51, 51))
+                .addGap(80, 80, 80))
         );
 
         pack();
@@ -170,16 +225,26 @@ public class Wuser extends javax.swing.JFrame {
 
     private void EnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EnterActionPerformed
     
-        String usu=jTextField2.getText();
-    String pas=new String(jPasswordField2.getPassword());
-        md5 mimd5= new md5();
-        String pass=mimd5.getStringMessageDigest(pas);
-    acceder(usu, pass);      
+       String usu=jTextField2.getText();
+       String passNormal=new String(jPasswordField2.getPassword());
+       String passEncriptada = crypto.Encriptar(passNormal);
+        //md5 mimd5= new md5();
+        //String pass=mimd5.getStringMessageDigest(pas);
+        acceder(usu, passEncriptada);      
     }//GEN-LAST:event_EnterActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
      
     }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jButtonRecuperarContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRecuperarContraseñaActionPerformed
+        // TODO add your handling code here:
+        dispose();
+        RecuperarCuenta recupera=new RecuperarCuenta();
+        recupera.llenarCombo("Vendedor","Vendedor Invitado");
+        recupera.ObtenerEmail("Vendedor","Vendedor Invitado");
+        recupera.setVisible(true);
+    }//GEN-LAST:event_jButtonRecuperarContraseñaActionPerformed
 
 
     public void ejecutar() {
@@ -215,8 +280,10 @@ public class Wuser extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Cancel;
     private javax.swing.JButton Enter;
+    private javax.swing.JButton jButtonRecuperarContraseña;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabelOlvido;
     private javax.swing.JPasswordField jPasswordField2;
     private javax.swing.JTextField jTextField2;
     private java.awt.Label label1;
